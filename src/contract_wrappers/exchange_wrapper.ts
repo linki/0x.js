@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 import * as BigNumber from 'bignumber.js';
 import promisify = require('es6-promisify');
 import {Web3Wrapper} from '../web3_wrapper';
+import * as Web3 from 'web3';
 import {
     ECSignature,
     ExchangeContract,
@@ -601,7 +602,16 @@ export class ExchangeWrapper extends ContractWrapper {
         const bignumberWrappingEventCallback = (err: Error, event: ContractEvent) => {
             if (_.isNull(err)) {
                 const wrapIfBigNumber = (value: ContractEventArg): ContractEventArg => {
-                    return _.isString(value) ? value : new BigNumber(value);
+                    // We need to check against the version of BigNumber that Web3 uses.
+                    const web3BigNumber = (Web3 as any).prototype.BigNumber;
+                    console.log('-----------------------');
+                    console.log('web3BigNumber', web3BigNumber);
+                    console.log('value', value);
+                    console.log('value.constructor', value.constructor);
+                    // console.log(Object.getPrototypeOf(value));
+                    const isWeb3BigNumber = value instanceof web3BigNumber;
+                    console.log('isWeb3BigNumber', isWeb3BigNumber);
+                    return isWeb3BigNumber ? value : new BigNumber(value);
                 };
                 event.args = _.mapValues(event.args, wrapIfBigNumber);
             }

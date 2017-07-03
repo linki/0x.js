@@ -736,7 +736,7 @@ describe('ExchangeWrapper', () => {
                 done();
             })();
         });
-        it('Should wrap all event args BigNumber instances in a newer version of BigNumber', (done: DoneCallback) => {
+        it.only('Should wrap all event args BigNumber instances in a newer version of BigNumber', (done: DoneCallback) => {
             (async () => {
                 const zeroExEvent = await zeroEx.exchange.subscribeAsync(ExchangeEvents.LogFill, subscriptionOpts,
                                                                          indexFilterValues);
